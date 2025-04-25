@@ -10,6 +10,6 @@ func updateNumber(n *int) int {
 func main() {
 	number := 5
 	update := fmt.Sprintf("the update value is: %d", updateNumber(&number))
-	number = 62
+	number = 7
 	fmt.Println(update)
 }
