@@ -9,11 +9,16 @@ executors:
 jobs:
   gatekeeper-check:
     executor: go-executor
-    environment:
-      AI_REVIEW_AGENT_URL: "https://your-ngrok-url.ngrok.io" # Replace with your running agent URL
-      REPO_NAME: "yemiwebby/test-ai-go-pr"
     steps:
       - checkout
+
+      - run:
+          name: Skip on main branch
+          command: |
+            if [ "$CIRCLE_BRANCH" = "main" ]; then
+              echo " Skipping gatekeeper check: already on 'main' branch."
+              exit 0
+            fi
 
       - run:
           name: Trigger AI gatekeeper check
@@ -30,12 +35,9 @@ jobs:
               exit 1
             fi
 
-            echo "✅ All AI comments acknowledged. Proceeding."
+            echo "All AI comments acknowledged. Proceeding."
 
 workflows:
   review-merge-gatekeeper:
     jobs:
-      - gatekeeper-check:
-          filters:
-            branches:
-              only: main
+      - gatekeeper-check
